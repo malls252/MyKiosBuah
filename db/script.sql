@@ -76,3 +76,18 @@ CREATE TABLE pengguna (
     CONSTRAINT uq_pengguna_email     UNIQUE (email)
 );
 
+-- ---------------------------------------------------------------------
+-- TABEL   : kategori  (Tugas 4 - 5.4.2)
+-- MODUL   : Modul Data Master Buah
+-- PEMILIK : Elvya Lestari Pakpahan - 23083000086
+-- BRANCH  : feature/elvya-data-master
+-- ---------------------------------------------------------------------
+-- [AI] prompt: "Buat CREATE TABLE kategori dengan id_kategori IDENTITY, nama_kategori VARCHAR(50) UNIQUE NOT NULL, dan deskripsi VARCHAR(255) NULL (jangan hilangkan deskripsi)."
+CREATE TABLE kategori (
+    id_kategori    INTEGER GENERATED ALWAYS AS IDENTITY,
+    nama_kategori  VARCHAR(50)  NOT NULL,
+    deskripsi      VARCHAR(255),
+    CONSTRAINT pk_kategori       PRIMARY KEY (id_kategori),
+    CONSTRAINT uq_kategori_nama  UNIQUE (nama_kategori)
+);
+
