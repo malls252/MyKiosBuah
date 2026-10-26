@@ -132,3 +132,51 @@ CREATE TABLE buah (
     CONSTRAINT chk_buah_stokmin  CHECK (stok_minimum >= 0)
 );
 
+-- ---------------------------------------------------------------------
+-- TABEL   : stok_masuk  (Tugas 4 - 5.4.5)
+-- Header penerimaan stok (pembelian buah oleh pemilik)
+-- MODUL   : Modul Stok Masuk, Batch, dan Alokasi FIFO
+-- PEMILIK : Elvya Lestari Pakpahan - 23083000086
+-- BRANCH  : feature/elvya-stok-fifo
+-- ---------------------------------------------------------------------
+-- [AI] prompt: "Buat CREATE TABLE stok_masuk sebagai HEADER penerimaan stok: id_stok_masuk IDENTITY, FK id_pengguna NOT NULL, tanggal_masuk TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, total_biaya NUMERIC(12,2) NULL CHECK >= 0, catatan VARCHAR(255) NULL. JANGAN tambahkan id_buah, berat_kg, atau harga_beli_per_kg di sini (itu milik batch_stok)."
+CREATE TABLE stok_masuk (
+    id_stok_masuk  INTEGER GENERATED ALWAYS AS IDENTITY,
+    id_pengguna    INTEGER        NOT NULL,
+    tanggal_masuk  TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    total_biaya    NUMERIC(12,2),
+    catatan        VARCHAR(255),
+    CONSTRAINT pk_stok_masuk           PRIMARY KEY (id_stok_masuk),
+    CONSTRAINT fk_stok_masuk_pengguna  FOREIGN KEY (id_pengguna) REFERENCES pengguna (id_pengguna)
+                                       ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT chk_stok_masuk_biaya    CHECK (total_biaya >= 0)
+);
+
+-- ---------------------------------------------------------------------
+-- TABEL   : batch_stok  (Tugas 4 - 5.4.6)
+-- Satuan stok per penerimaan per buah; unit pengurangan metode FIFO.
+-- MODUL   : Modul Stok Masuk, Batch, dan Alokasi FIFO
+-- PEMILIK : Elvya Lestari Pakpahan - 23083000086
+-- BRANCH  : feature/elvya-stok-fifo
+-- ---------------------------------------------------------------------
+-- [AI] prompt: "Buat CREATE TABLE batch_stok dengan id_batch IDENTITY, FK id_buah NOT NULL, FK id_stok_masuk NOT NULL, jumlah_masuk_kg NUMERIC(10,3) NOT NULL CHECK > 0, sisa_kg NUMERIC(10,3) NOT NULL CHECK 0 <= sisa_kg <= jumlah_masuk_kg, harga_beli_per_kg NUMERIC(10,2) NULL CHECK >= 0, status_batch enum_status_batch NOT NULL DEFAULT 'Tersedia'. Jangan pindahkan harga_beli_per_kg ke stok_masuk dan jangan hilangkan status_batch."
+CREATE TABLE batch_stok (
+    id_batch          INTEGER GENERATED ALWAYS AS IDENTITY,
+    id_buah           INTEGER        NOT NULL,
+    id_stok_masuk     INTEGER        NOT NULL,
+    jumlah_masuk_kg   NUMERIC(10,3)  NOT NULL,
+    sisa_kg           NUMERIC(10,3)  NOT NULL,
+    harga_beli_per_kg NUMERIC(10,2),
+    status_batch      enum_status_batch NOT NULL DEFAULT 'Tersedia',
+    CONSTRAINT pk_batch_stok              PRIMARY KEY (id_batch),
+    CONSTRAINT fk_batch_stok_buah         FOREIGN KEY (id_buah)       REFERENCES buah (id_buah)
+                                          ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT fk_batch_stok_stok_masuk   FOREIGN KEY (id_stok_masuk) REFERENCES stok_masuk (id_stok_masuk)
+                                          ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT chk_batch_stok_jumlah      CHECK (jumlah_masuk_kg > 0),
+    CONSTRAINT chk_batch_stok_sisa        CHECK (sisa_kg >= 0 AND sisa_kg <= jumlah_masuk_kg),
+    CONSTRAINT chk_batch_stok_harga       CHECK (harga_beli_per_kg >= 0)
+);
+
+-- [AI] prompt: "Buat indeks idx_batch_fifo pada batch_stok (id_buah, status_batch, id_batch) sesuai Tugas 4 bagian 5.4.6 untuk mempercepat pencarian batch tertua per buah pada alokasi FIFO."
+CREATE INDEX idx_batch_fifo ON batch_stok (id_buah, status_batch, id_batch);
