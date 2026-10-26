@@ -244,3 +244,66 @@ CREATE TABLE detail_transaksi (
     CONSTRAINT chk_detail_transaksi_subtotal   CHECK (subtotal >= 0)
 );
 
+-- ---------------------------------------------------------------------
+-- TABEL   : pesanan  (Tugas 4 - 5.4.9)
+-- Header pesanan online.
+-- MODUL   : Modul Pesanan Online
+-- PEMILIK : Dwi Hikmal Akbar Ramadhan - 23083000096
+-- BRANCH  : feature/hikmal-pesanan-online
+-- ---------------------------------------------------------------------
+-- [AI] prompt: "Buat CREATE TABLE pesanan dengan id_pesanan IDENTITY, FK id_pengguna NOT NULL (pembeli), tanggal_pesanan TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, metode_pengiriman enum_metode_pengiriman NOT NULL, alamat_kirim VARCHAR(255) NULL, biaya_antar NUMERIC(10,2) NOT NULL DEFAULT 0 CHECK >= 0, metode_bayar enum_metode_bayar NOT NULL, status_pesanan enum_status_pesanan NOT NULL DEFAULT 'Sedang Disiapkan', total_pesanan NUMERIC(12,2) NOT NULL CHECK >= 0. Tambahkan dua CHECK: (Diantar wajib alamat) OR (Ambil di Kios biaya_antar = 0); dan (metode_pengiriman = 'Diantar' OR status_pesanan <> 'Sedang Diantar')."
+CREATE TABLE pesanan (
+    id_pesanan          INTEGER GENERATED ALWAYS AS IDENTITY,
+    id_pengguna         INTEGER                NOT NULL,
+    tanggal_pesanan     TIMESTAMPTZ            NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    metode_pengiriman   enum_metode_pengiriman NOT NULL,
+    alamat_kirim        VARCHAR(255),
+    biaya_antar         NUMERIC(10,2)          NOT NULL DEFAULT 0,
+    metode_bayar        enum_metode_bayar      NOT NULL,
+    status_pesanan      enum_status_pesanan    NOT NULL DEFAULT 'Sedang Disiapkan',
+    total_pesanan       NUMERIC(12,2)          NOT NULL,
+    CONSTRAINT pk_pesanan                 PRIMARY KEY (id_pesanan),
+    CONSTRAINT fk_pesanan_pengguna        FOREIGN KEY (id_pengguna) REFERENCES pengguna (id_pengguna)
+                                          ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT chk_pesanan_biaya          CHECK (biaya_antar >= 0),
+    CONSTRAINT chk_pesanan_total          CHECK (total_pesanan >= 0),
+    CONSTRAINT chk_pesanan_alamat         CHECK (
+        (metode_pengiriman = 'Diantar' AND alamat_kirim IS NOT NULL)
+        OR (metode_pengiriman = 'Ambil di Kios' AND biaya_antar = 0)
+    ),
+    CONSTRAINT chk_pesanan_status_antar   CHECK (
+        metode_pengiriman = 'Diantar'
+        OR status_pesanan <> 'Sedang Diantar'
+    )
+);
+
+-- [AI] prompt: "Buat indeks idx_pesanan_pembeli pada pesanan (id_pengguna, status_pesanan) dan idx_pesanan_tanggal pada pesanan (tanggal_pesanan) sesuai Tugas 4 bagian 5.4.9."
+CREATE INDEX idx_pesanan_pembeli ON pesanan (id_pengguna, status_pesanan);
+CREATE INDEX idx_pesanan_tanggal ON pesanan (tanggal_pesanan);
+
+-- ---------------------------------------------------------------------
+-- TABEL   : detail_pesanan  (Tugas 4 - 5.4.10)
+-- Rincian buah pada satu pesanan.
+-- MODUL   : Modul Pesanan Online
+-- PEMILIK : Dwi Hikmal Akbar Ramadhan - 23083000096
+-- BRANCH  : feature/hikmal-pesanan-online
+-- ---------------------------------------------------------------------
+-- [AI] prompt: "Buat CREATE TABLE detail_pesanan dengan id_detail_pesanan IDENTITY, FK id_pesanan NOT NULL, FK id_buah NOT NULL, berat_kg NUMERIC(10,3) NOT NULL CHECK > 0, harga_satuan NUMERIC(10,2) NOT NULL CHECK >= 0, subtotal NUMERIC(12,2) NOT NULL CHECK >= 0. Tambahkan UNIQUE (id_pesanan, id_buah)."
+CREATE TABLE detail_pesanan (
+    id_detail_pesanan  INTEGER GENERATED ALWAYS AS IDENTITY,
+    id_pesanan         INTEGER        NOT NULL,
+    id_buah            INTEGER        NOT NULL,
+    berat_kg           NUMERIC(10,3)  NOT NULL,
+    harga_satuan       NUMERIC(10,2)  NOT NULL,
+    subtotal           NUMERIC(12,2)  NOT NULL,
+    CONSTRAINT pk_detail_pesanan             PRIMARY KEY (id_detail_pesanan),
+    CONSTRAINT fk_detail_pesanan_pesanan     FOREIGN KEY (id_pesanan) REFERENCES pesanan (id_pesanan)
+                                             ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT fk_detail_pesanan_buah        FOREIGN KEY (id_buah)    REFERENCES buah (id_buah)
+                                             ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT uq_detail_pesanan_buah        UNIQUE (id_pesanan, id_buah),
+    CONSTRAINT chk_detail_pesanan_berat      CHECK (berat_kg > 0),
+    CONSTRAINT chk_detail_pesanan_harga      CHECK (harga_satuan >= 0),
+    CONSTRAINT chk_detail_pesanan_subtotal   CHECK (subtotal >= 0)
+);
+
