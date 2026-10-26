@@ -91,3 +91,19 @@ CREATE TABLE kategori (
     CONSTRAINT uq_kategori_nama  UNIQUE (nama_kategori)
 );
 
+-- ---------------------------------------------------------------------
+-- TABEL   : satuan  (Tugas 4 - 5.4.3)
+-- MODUL   : Modul Data Master Buah
+-- PEMILIK : Elvya Lestari Pakpahan - 23083000086
+-- BRANCH  : feature/elvya-data-master
+-- ---------------------------------------------------------------------
+-- [AI] prompt: "Buat CREATE TABLE satuan dengan id_satuan IDENTITY, nama_satuan VARCHAR(30) UNIQUE NOT NULL, dan kolom bernama simbol VARCHAR(10) UNIQUE NOT NULL (bukan singkatan)."
+CREATE TABLE satuan (
+    id_satuan    INTEGER GENERATED ALWAYS AS IDENTITY,
+    nama_satuan  VARCHAR(30) NOT NULL,
+    simbol       VARCHAR(10) NOT NULL,
+    CONSTRAINT pk_satuan           PRIMARY KEY (id_satuan),
+    CONSTRAINT uq_satuan_nama      UNIQUE (nama_satuan),
+    CONSTRAINT uq_satuan_simbol    UNIQUE (simbol)
+);
+
