@@ -107,3 +107,28 @@ CREATE TABLE satuan (
     CONSTRAINT uq_satuan_simbol    UNIQUE (simbol)
 );
 
+-- ---------------------------------------------------------------------
+-- TABEL   : buah  (Tugas 4 - 5.4.4)
+-- MODUL   : Modul Data Master Buah
+-- PEMILIK : Elvya Lestari Pakpahan - 23083000086
+-- BRANCH  : feature/elvya-data-master
+-- ---------------------------------------------------------------------
+-- [AI] prompt: "Buat CREATE TABLE buah dengan id_buah IDENTITY, FK id_kategori dan id_satuan NOT NULL, nama_buah VARCHAR(100) UNIQUE NOT NULL, harga_per_kg NUMERIC(10,2) NOT NULL CHECK >= 0, stok_minimum NUMERIC(10,3) NOT NULL DEFAULT 0 CHECK >= 0, aktif BOOLEAN NOT NULL DEFAULT TRUE. FK memakai ON DELETE RESTRICT ON UPDATE RESTRICT."
+CREATE TABLE buah (
+    id_buah        INTEGER GENERATED ALWAYS AS IDENTITY,
+    id_kategori    INTEGER        NOT NULL,
+    id_satuan      INTEGER        NOT NULL,
+    nama_buah      VARCHAR(100)   NOT NULL,
+    harga_per_kg   NUMERIC(10,2)  NOT NULL,
+    stok_minimum   NUMERIC(10,3)  NOT NULL DEFAULT 0,
+    aktif          BOOLEAN        NOT NULL DEFAULT TRUE,
+    CONSTRAINT pk_buah           PRIMARY KEY (id_buah),
+    CONSTRAINT uq_buah_nama      UNIQUE (nama_buah),
+    CONSTRAINT fk_buah_kategori  FOREIGN KEY (id_kategori) REFERENCES kategori (id_kategori)
+                                 ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT fk_buah_satuan    FOREIGN KEY (id_satuan)   REFERENCES satuan (id_satuan)
+                                 ON DELETE RESTRICT ON UPDATE RESTRICT,
+    CONSTRAINT chk_buah_harga    CHECK (harga_per_kg >= 0),
+    CONSTRAINT chk_buah_stokmin  CHECK (stok_minimum >= 0)
+);
+
