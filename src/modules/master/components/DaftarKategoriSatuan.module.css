@@ -1,0 +1,110 @@
+/* [AI] prompt: CSS Modules untuk DaftarKategoriSatuan: tab filter kategori & satuan, kartu item master, modal form & konfirmasi hapus */
+.wadah {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 16px);
+  margin-top: var(--space-3, 12px);
+  margin-bottom: var(--space-6, 24px);
+}
+
+.daftarKartu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+
+.kartuItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3, 12px);
+}
+
+.teksItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+  min-width: 0;
+}
+
+.judulItem {
+  font-size: var(--font-size-base, 14px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--color-text-primary, #263b2d);
+  margin: 0;
+}
+
+.deskripsiItem {
+  font-size: var(--font-size-xs, 12px);
+  color: var(--color-text-secondary, #737b73);
+  margin: 0;
+}
+
+.aksiGrup {
+  display: flex;
+  gap: var(--space-2, 8px);
+  flex-shrink: 0;
+}
+
+.keadaanKosong {
+  text-align: center;
+  padding: var(--space-6, 24px);
+  color: var(--color-text-secondary, #737b73);
+  font-size: var(--font-size-sm, 13px);
+}
+
+.formModal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+  padding: var(--space-2, 8px) 0;
+}
+
+.kelompokInput {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+}
+
+.label {
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-primary, #263b2d);
+}
+
+.input {
+  height: 44px;
+  padding: 0 var(--space-3, 12px);
+  font-size: var(--font-size-base, 14px);
+  border: 1px solid var(--color-border, #e5e9e3);
+  border-radius: var(--radius-sm, 8px);
+  outline: none;
+  background-color: var(--color-white, #ffffff);
+  color: var(--color-text-primary, #263b2d);
+}
+
+.input:focus {
+  border-color: var(--color-border-focus, #3f7d4a);
+}
+
+.panelErrorModal {
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  background-color: var(--color-red-light, #fdece8);
+  border: 1px solid var(--color-red-danger, #e76f51);
+  border-radius: var(--radius-sm, 8px);
+  color: var(--color-red-dark, #9f351b);
+  font-size: var(--font-size-xs, 12px);
+}
+
+.tombolGrupModal {
+  display: flex;
+  gap: var(--space-2, 8px);
+  margin-top: var(--space-3, 12px);
+}
+
+.teksKonfirmasi {
+  font-size: var(--font-size-sm, 13px);
+  color: var(--color-text-secondary, #737b73);
+  line-height: 1.5;
+  margin: 0;
+}
