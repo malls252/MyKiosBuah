@@ -1,12 +1,76 @@
-// [AI] prompt: "Buat src/app/api/transaksi/route.ts sebagai POST handler Next.js App Router untuk endpoint pembuatan transaksi kasir, dengan validasi Zod, penanganan StokTidakCukupError, dan respons JSON terstruktur."
+// [AI] prompt: "Perbarui src/app/api/transaksi/route.ts dengan handler POST (buat transaksi) dan GET (riwayat transaksi opsional ?tanggal=YYYY-MM-DD)."
 
 import { NextRequest, NextResponse } from "next/server";
 import { skemaBuatTransaksi } from "@/modules/transaksi/schema";
-import { buatTransaksi, StokTidakCukupError } from "@/modules/transaksi/service";
+import {
+  buatTransaksi,
+  ambilRiwayatTransaksi,
+  StokTidakCukupError,
+} from "@/modules/transaksi/service";
+import { getSesi } from "@/modules/transaksi/stub-sementara";
+
+// [AI] prompt: "GET /api/transaksi — ambil riwayat transaksi kasir, mendukung query opsional ?tanggal=YYYY-MM-DD."
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  try {
+    const sesi = await getSesi();
+    if (!sesi) {
+      return NextResponse.json(
+        { berhasil: false, pesan: "Sesi tidak ditemukan. Silakan login kembali." },
+        { status: 401 }
+      );
+    }
+    if (sesi.peran !== "Kasir") {
+      return NextResponse.json(
+        { berhasil: false, pesan: "Akses ditolak. Hanya kasir yang dapat mengakses riwayat ini." },
+        { status: 403 }
+      );
+    }
+
+    const tanggalParam = req.nextUrl.searchParams.get("tanggal") ?? undefined;
+    if (tanggalParam && !/^\d{4}-\d{2}-\d{2}$/.test(tanggalParam)) {
+      return NextResponse.json(
+        { berhasil: false, pesan: "Format tanggal tidak valid. Gunakan YYYY-MM-DD." },
+        { status: 400 }
+      );
+    }
+
+    const riwayat = await ambilRiwayatTransaksi({ tanggal: tanggalParam });
+
+    return NextResponse.json(
+      {
+        berhasil: true,
+        data: riwayat,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("[GET /api/transaksi] Error tak terduga:", error);
+    return NextResponse.json(
+      {
+        berhasil: false,
+        pesan: "Terjadi kesalahan pada server saat memuat riwayat transaksi.",
+      },
+      { status: 500 }
+    );
+  }
+}
 
 // [AI] prompt: "POST /api/transaksi — parse body JSON, validasi dengan skemaBuatTransaksi.safeParse, panggil buatTransaksi, tangani error validasi (422), stok habis (409), dan error tak terduga (500)."
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  // 1. Parse body JSON
+  const sesi = await getSesi();
+  if (!sesi) {
+    return NextResponse.json(
+      { berhasil: false, pesan: "Sesi tidak ditemukan. Silakan login kembali." },
+      { status: 401 }
+    );
+  }
+  if (sesi.peran !== "Kasir") {
+    return NextResponse.json(
+      { berhasil: false, pesan: "Akses ditolak. Hanya kasir yang dapat mencatat transaksi." },
+      { status: 403 }
+    );
+  }
+
   let body: unknown;
   try {
     body = await req.json();
@@ -20,11 +84,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // 2. Validasi input dengan Zod
   const hasil = skemaBuatTransaksi.safeParse(body);
 
   if (!hasil.success) {
-    // [AI] prompt: "Kembalikan HTTP 422 dengan array isu validasi Zod (path + message) agar klien bisa menampilkan error per field."
     const isu = hasil.error.issues.map((i) => ({
       field: i.path.join("."),
       pesan: i.message,
@@ -40,11 +102,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 
-  // 3. Jalankan service buatTransaksi
   try {
     const struk = await buatTransaksi(hasil.data);
 
-    // [AI] prompt: "Kembalikan HTTP 201 dengan objek struk lengkap dalam field data jika transaksi berhasil dibuat."
     return NextResponse.json(
       {
         berhasil: true,
@@ -54,7 +114,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       { status: 201 }
     );
   } catch (error) {
-    // [AI] prompt: "Tangani StokTidakCukupError dengan HTTP 409 Conflict agar UI bisa menampilkan pesan stok habis tanpa crash."
     if (error instanceof StokTidakCukupError) {
       return NextResponse.json(
         {
@@ -65,7 +124,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // [AI] prompt: "Log error tak terduga di server dan kembalikan HTTP 500 tanpa detail internal ke klien."
     console.error("[POST /api/transaksi] Error tak terduga:", error);
     return NextResponse.json(
       {
