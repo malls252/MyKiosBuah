@@ -1,0 +1,46 @@
+/* [AI] prompt: "Buat InfoPanel.module.css untuk kartu informasi ringkas dengan ikon kiri, varian latar hijau muda atau cream, dan sudut membulat." */
+.panel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  line-height: 1.35;
+}
+
+.hijau {
+  background-color: var(--color-light-green);
+  border-color: #D3E7D3;
+}
+
+.cream {
+  background-color: #FFF5E4;
+  border-color: #F8E2BE;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary-green);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
