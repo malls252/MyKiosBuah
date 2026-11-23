@@ -55,3 +55,5 @@ export const Button: React.FC<ButtonProps> = ({
     </button>
   );
 };
+
+export const Tombol = Button;

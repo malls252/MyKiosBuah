@@ -1,0 +1,35 @@
+/* [AI] prompt: CSS Modules untuk halaman autentikasi (login/registrasi): wadah mobile-first max-width 480px di tengah layar dengan latar abu-abu terang */
+.wadahHalaman {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-neutral-bg, #f7f7f7);
+  padding: var(--space-4, 16px);
+}
+
+.konten {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5, 20px);
+}
+
+.headerHalaman {
+  text-align: center;
+}
+
+.judul {
+  font-size: var(--font-size-2xl, 24px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--color-text-primary, #263b2d);
+  margin: 0 0 var(--space-1, 4px) 0;
+  letter-spacing: -0.5px;
+}
+
+.subjudul {
+  font-size: var(--font-size-sm, 13px);
+  color: var(--color-text-secondary, #737b73);
+  margin: 0;
+}
