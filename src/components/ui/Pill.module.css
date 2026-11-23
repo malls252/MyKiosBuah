@@ -1,0 +1,43 @@
+/* [AI] prompt: "Buat Pill.module.css untuk label kecil berbentuk kapsul dengan varian netral, hitam, hijau, merah, dan kuning sesuai identitas kios buah." */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.netral {
+  background-color: var(--color-neutral-bg);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+.hitam {
+  background-color: var(--color-dark-green);
+  color: var(--color-white);
+}
+
+.hijau {
+  background-color: var(--color-light-green);
+  color: #1D5528;
+  border: 1px solid #D0E5D0;
+}
+
+.merah {
+  background-color: var(--color-red-light);
+  color: var(--color-red-dark);
+  border: 1px solid #F7D0C6;
+}
+
+.kuning {
+  background-color: var(--color-yellow-light);
+  color: var(--color-yellow-dark);
+  border: 1px solid #FBE9B8;
+}

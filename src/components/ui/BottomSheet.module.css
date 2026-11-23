@@ -1,0 +1,89 @@
+/* [AI] prompt: "Buat BottomSheet.module.css untuk panel geser bawah dengan overlay gelap transparan, sudut atas melengkung 18px, tombol tutup, dan area scrollable." */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(38, 59, 45, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.panel {
+  width: 100%;
+  max-width: var(--max-mobile-width);
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  max-height: 85vh;
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.dragHandle {
+  width: 36px;
+  height: 4px;
+  background-color: #D3DBD0;
+  border-radius: var(--radius-pill);
+  margin: var(--space-2) auto 0 auto;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.closeBtn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  background-color: var(--color-neutral-bg);
+  transition: all 0.15s ease-in-out;
+}
+
+.closeBtn:hover {
+  background-color: var(--color-neutral-hover);
+  color: var(--color-text-primary);
+}
+
+.body {
+  padding: var(--space-4);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
