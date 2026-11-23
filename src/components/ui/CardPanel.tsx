@@ -41,3 +41,5 @@ export const CardPanel: React.FC<CardPanelProps> = ({
     </div>
   );
 };
+
+export const KartuPanel = CardPanel;

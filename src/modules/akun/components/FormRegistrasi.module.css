@@ -1,0 +1,97 @@
+/* [AI] prompt: Gaya CSS Modules untuk FormRegistrasi pembeli: field bertingkat, toggle password, panel pesan status, dan tombol aksi */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 16px);
+}
+
+.kelompokInput {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+}
+
+.label {
+  font-size: var(--font-size-sm, 13px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-primary, #263b2d);
+}
+
+.opsional {
+  font-weight: var(--font-weight-normal, 400);
+  color: var(--color-text-secondary, #737b73);
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--space-3, 12px);
+  font-size: var(--font-size-base, 14px);
+  border: 1px solid var(--color-border, #e5e9e3);
+  border-radius: var(--radius-sm, 8px);
+  background-color: var(--color-white, #ffffff);
+  color: var(--color-text-primary, #263b2d);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.input:focus {
+  border-color: var(--color-border-focus, #3f7d4a);
+}
+
+.inputPassword {
+  padding-right: 48px;
+}
+
+.tombolLihat {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--color-text-secondary, #737b73);
+  cursor: pointer;
+  padding: 0;
+}
+
+.tombolLihat:hover {
+  color: var(--color-text-primary, #263b2d);
+}
+
+.panelError {
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  background-color: var(--color-red-light, #fdece8);
+  border: 1px solid var(--color-red-danger, #e76f51);
+  border-radius: var(--radius-sm, 8px);
+  color: var(--color-red-dark, #9f351b);
+  font-size: var(--font-size-sm, 13px);
+  line-height: 1.4;
+}
+
+.footerForm {
+  margin-top: var(--space-2, 8px);
+  text-align: center;
+}
+
+.tautan {
+  font-size: var(--font-size-sm, 13px);
+  color: var(--color-text-primary, #263b2d);
+  font-weight: var(--font-weight-semibold, 600);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.tautan:hover {
+  color: var(--color-primary-green, #3f7d4a);
+}

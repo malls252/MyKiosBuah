@@ -55,3 +55,5 @@ export const PageLayout: React.FC<PageLayoutProps> = ({
     </div>
   );
 };
+
+export const KerangkaHalaman = PageLayout;

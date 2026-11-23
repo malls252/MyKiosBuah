@@ -80,3 +80,5 @@ export const BottomSheet: React.FC<BottomSheetProps> = ({
     </div>
   );
 };
+
+export const LembarBawah = BottomSheet;
