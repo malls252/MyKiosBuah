@@ -1,7 +1,7 @@
 // [AI] prompt: "Susun ulang halaman src/app/(kasir)/kasir/page.tsx persis mengikuti wireframe: banner shift, baris pencarian + tombol keranjang, panel transaksi ditahan, ringkasan keranjang, daftar item dengan stepper, kartu ringkasan total, kartu pembayaran 3 tab dengan nominal cepat, tombol CTA proses transaksi, dan bar transaksi terakhir. Logika bisnis tetap di service/API; komponen hanya tampilan dan interaksi."
 "use client";
 
-import React, { useState, useCallback, useMemo, useRef } from "react";
+import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { CardPanel } from "@/components/ui/CardPanel";
 import { Button } from "@/components/ui/Button";
@@ -292,12 +292,18 @@ export default function HalamanKasir() {
     }
   };
 
-  const tanggalHariIni = new Date().toLocaleDateString("id-ID", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  // [AI] prompt: "Hitung tanggal hari ini di useEffect agar aman dari error prerender Next.js 16 (new Date di Client Component)."
+  const [tanggalHariIni, setTanggalHariIni] = useState("");
+  useEffect(() => {
+    setTanggalHariIni(
+      new Date().toLocaleDateString("id-ID", {
+        weekday: "long",
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })
+    );
+  }, []);
 
   return (
     <PageLayout title="Kasir" peran="kasir" namaPengguna="Rina Wulandari">
