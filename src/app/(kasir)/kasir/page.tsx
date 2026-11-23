@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { InfoPanel } from "@/components/ui/InfoPanel";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { BuahAktif, Struk } from "@/modules/transaksi/types";
+import { StrukTransaksi } from "@/modules/transaksi/components/StrukTransaksi";
 import styles from "./page.module.css";
 
 // [AI] prompt: "ItemKeranjang mewakili baris item yang dipilih kasir sebelum dikirim ke API (diskon per item selalu 0 sesuai wireframe)."
@@ -292,17 +293,20 @@ export default function HalamanKasir() {
     }
   };
 
-  // [AI] prompt: "Hitung tanggal hari ini di useEffect agar aman dari error prerender Next.js 16 (new Date di Client Component)."
+  // [AI] prompt: "Hitung tanggal hari ini lewat timer 0ms di useEffect agar aman dari error prerender Next.js 16 dan aturan react-hooks/set-state-in-effect."
   const [tanggalHariIni, setTanggalHariIni] = useState("");
   useEffect(() => {
-    setTanggalHariIni(
-      new Date().toLocaleDateString("id-ID", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-      })
-    );
+    const id = window.setTimeout(() => {
+      setTanggalHariIni(
+        new Date().toLocaleDateString("id-ID", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      );
+    }, 0);
+    return () => window.clearTimeout(id);
   }, []);
 
   return (
@@ -613,40 +617,11 @@ export default function HalamanKasir() {
         {/* Struk */}
         <BottomSheet isOpen={showStruk} onClose={() => setShowStruk(false)} title="Transaksi Berhasil">
           {strukTerakhir && (
-            <div className={styles.strukWrap}>
-              <p className={styles.strukMeta}>No. Transaksi: <strong>#{strukTerakhir.idTransaksi}</strong></p>
-              <p className={styles.strukMeta}>Kasir: <strong>{strukTerakhir.namaKasir}</strong></p>
-              <p className={styles.strukMeta}>
-                Waktu: <strong>{new Date(strukTerakhir.tanggalWaktu).toLocaleString("id-ID")}</strong>
-              </p>
-              <hr className={styles.strukDivider} />
-              {strukTerakhir.item.map((item, idx) => (
-                <div key={idx} className={styles.strukItem}>
-                  <span>{item.namaBuah}</span>
-                  <span>{item.beratKg} kg × {formatRupiah(item.hargaSatuan)}</span>
-                  <span className={styles.strukSubtotal}>{formatRupiah(item.subtotal)}</span>
-                </div>
-              ))}
-              <hr className={styles.strukDivider} />
-              <div className={styles.strukTotal}>
-                <span>Total Bayar</span>
-                <span>{formatRupiah(strukTerakhir.totalBayar)}</span>
-              </div>
-              {strukTerakhir.metodeBayar === "Tunai" && (
-                <>
-                  <div className={styles.strukTotal}>
-                    <span>Uang Diterima</span>
-                    <span>{formatRupiah(strukTerakhir.uangDiterima ?? 0)}</span>
-                  </div>
-                  <div className={`${styles.strukTotal} ${styles.strukKembalian}`}>
-                    <span>Kembalian</span>
-                    <span>{formatRupiah(strukTerakhir.kembalian ?? 0)}</span>
-                  </div>
-                </>
-              )}
-              <div className={styles.strukMetodeBadge}>Metode: {strukTerakhir.metodeBayar}</div>
-              <Button title="Transaksi Baru" variant="utama" fullWidth onClick={() => setShowStruk(false)} />
-            </div>
+            <StrukTransaksi
+              struk={strukTerakhir}
+              onTutup={() => setShowStruk(false)}
+              labelTutup="Transaksi Baru"
+            />
           )}
         </BottomSheet>
       </div>

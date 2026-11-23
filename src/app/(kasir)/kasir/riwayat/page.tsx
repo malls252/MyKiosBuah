@@ -13,6 +13,7 @@ import { BottomSheet } from "@/components/ui/BottomSheet";
 import { InfoPanel } from "@/components/ui/InfoPanel";
 import { Struk } from "@/modules/transaksi/types";
 import type { RingkasanRiwayat } from "@/modules/transaksi/repository";
+import { StrukTransaksi } from "@/modules/transaksi/components/StrukTransaksi";
 import styles from "./page.module.css";
 
 type TabPeriode = "hari-ini" | "kemarin" | "pilih-tanggal";
@@ -39,18 +40,6 @@ function tanggalJakartaYmd(offsetHari = 0): string {
 function formatJamJakarta(iso: string | Date): string {
   return new Intl.DateTimeFormat("id-ID", {
     timeZone: "Asia/Jakarta",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  }).format(new Date(iso));
-}
-
-function formatTanggalWaktuJakarta(iso: string | Date): string {
-  return new Intl.DateTimeFormat("id-ID", {
-    timeZone: "Asia/Jakarta",
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -271,78 +260,13 @@ export default function HalamanRiwayatKasir() {
         >
           {strukAktif && (
             <div className={styles.strukWrap}>
-              <div className={styles.strukHeader}>
-                <strong>MyKiosBuah</strong>
-                <span>No. #{strukAktif.idTransaksi}</span>
-                <span>{formatTanggalWaktuJakarta(strukAktif.tanggalWaktu)} WIB</span>
-                <span>Kasir: {strukAktif.namaKasir}</span>
-              </div>
-
-              <hr className={styles.garisPutus} />
-
-              <div className={styles.daftarItemStruk}>
-                {strukAktif.item.map((item, idx) => (
-                  <div key={idx} className={styles.itemStruk}>
-                    <div className={styles.itemStrukAtas}>
-                      <span className={styles.itemNama}>{item.namaBuah}</span>
-                      <span className={styles.itemSubtotal}>{formatRupiah(item.subtotal)}</span>
-                    </div>
-                    <span className={styles.itemDetail}>
-                      {item.beratKg} kg × {formatRupiah(item.hargaSatuan)}
-                      {item.diskon > 0 ? ` (Diskon ${formatRupiah(item.diskon)})` : ""}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <hr className={styles.garisPutus} />
-
-              <div className={styles.barisRingkas}>
-                <span>Total Bruto</span>
-                <span>{formatRupiah(strukAktif.totalBruto)}</span>
-              </div>
-              {strukAktif.totalDiskon > 0 && (
-                <div className={styles.barisRingkas}>
-                  <span>Total Diskon</span>
-                  <span>– {formatRupiah(strukAktif.totalDiskon)}</span>
-                </div>
-              )}
-              <div className={`${styles.barisRingkas} ${styles.totalUtama}`}>
-                <span>Total Bayar</span>
-                <span>{formatRupiah(strukAktif.totalBayar)}</span>
-              </div>
-              <div className={styles.barisRingkas}>
-                <span>Metode Bayar</span>
-                <span>{strukAktif.metodeBayar}</span>
-              </div>
-              {strukAktif.metodeBayar === "Tunai" && (
-                <>
-                  <div className={styles.barisRingkas}>
-                    <span>Uang Diterima</span>
-                    <span>{formatRupiah(strukAktif.uangDiterima ?? 0)}</span>
-                  </div>
-                  <div className={`${styles.barisRingkas} ${styles.kembalian}`}>
-                    <span>Kembalian</span>
-                    <span>{formatRupiah(strukAktif.kembalian ?? 0)}</span>
-                  </div>
-                </>
-              )}
-
-              <div className={styles.aksiStruk}>
-                <Link
-                  href={`/kasir/struk/${strukAktif.idTransaksi}`}
-                  className={styles.linkHalamanStruk}
-                >
-                  <IkonPrinter />
-                  <span>Buka Halaman Cetak Struk</span>
-                </Link>
-                <Button
-                  title="Tutup"
-                  variant="sekunder"
-                  fullWidth
-                  onClick={() => setBukaStruk(false)}
-                />
-              </div>
+              <StrukTransaksi struk={strukAktif} onTutup={() => setBukaStruk(false)} />
+              <Link
+                href={`/kasir/struk/${strukAktif.idTransaksi}`}
+                className={styles.linkHalamanStruk}
+              >
+                Buka Halaman Struk Terpisah
+              </Link>
             </div>
           )}
         </BottomSheet>
