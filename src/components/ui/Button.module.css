@@ -1,0 +1,111 @@
+/* [AI] prompt: "Buat Button.module.css dengan varian utama, sekunder, bahaya, status hover/active/disabled/loading, min-height 44px, dan dukungan 2 baris teks." */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--touch-target-min);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-base);
+  font-weight: var(--font-weight-semibold);
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-align: center;
+  gap: var(--space-2);
+}
+
+.btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+/* Varian Tombol */
+.utama {
+  background-color: var(--color-primary-green);
+  color: var(--color-white);
+  box-shadow: 0 2px 6px rgba(63, 125, 74, 0.25);
+}
+
+.utama:hover:not(:disabled) {
+  background-color: var(--color-primary-green-hover);
+}
+
+.utama:active:not(:disabled) {
+  background-color: var(--color-primary-green-active);
+}
+
+.sekunder {
+  background-color: var(--color-light-green);
+  color: var(--color-dark-green);
+  border-color: #D3E7D3;
+}
+
+.sekunder:hover:not(:disabled) {
+  background-color: #DCEDDC;
+}
+
+.bahaya {
+  background-color: var(--color-red-danger);
+  color: var(--color-white);
+  box-shadow: 0 2px 6px rgba(231, 111, 81, 0.25);
+}
+
+.bahaya:hover:not(:disabled) {
+  background-color: #D65A3C;
+}
+
+/* Disabled & Loading */
+.disabled,
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Susunan Konten */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.2;
+}
+
+.title {
+  font-size: var(--font-size-base);
+}
+
+.subtitle {
+  font-size: var(--font-size-xs);
+  opacity: 0.85;
+  font-weight: var(--font-weight-normal);
+  margin-top: 2px;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Spinner Animasi */
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

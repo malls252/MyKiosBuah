@@ -1,0 +1,46 @@
+/* [AI] prompt: "Buat SectionHeader.module.css dengan garis indikator vertikal hijau di sisi kiri, judul, subjudul, dan slot aksi di sisi kanan." */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.leftGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.indicator {
+  width: 4px;
+  height: 20px;
+  background-color: var(--color-primary-green);
+  border-radius: var(--radius-pill);
+  flex-shrink: 0;
+}
+
+.textGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  line-height: 1.25;
+}
+
+.subtitle {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}

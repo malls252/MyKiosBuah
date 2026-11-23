@@ -1,0 +1,66 @@
+/* [AI] prompt: "Buat TabFilter.module.css untuk deretan pill horizontal scrollable dengan status aktif hijau, status inaktif netral, badge angka, dan scrollbar tersembunyi." */
+.container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: 2px 0 var(--space-2) 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.inaktif {
+  background-color: var(--color-neutral-bg);
+  color: var(--color-text-primary);
+  border-color: var(--color-border);
+}
+
+.inaktif:hover {
+  background-color: var(--color-neutral-hover);
+}
+
+.aktif {
+  background-color: var(--color-primary-green);
+  color: var(--color-white);
+  box-shadow: 0 2px 6px rgba(63, 125, 74, 0.25);
+}
+
+/* Badge angka di dalam tab */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.badgeInaktif {
+  background-color: #DFE5DC;
+  color: var(--color-text-primary);
+}
+
+.badgeAktif {
+  background-color: rgba(255, 255, 255, 0.25);
+  color: var(--color-white);
+}
