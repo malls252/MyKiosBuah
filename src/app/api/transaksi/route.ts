@@ -1,30 +1,18 @@
-// [AI] prompt: "Perbarui src/app/api/transaksi/route.ts dengan handler POST (buat transaksi) dan GET (riwayat transaksi opsional ?tanggal=YYYY-MM-DD)."
+// [AI] prompt: "Perbarui src/app/api/transaksi/route.ts agar memakai wajibPeran dari @/lib/auth dan AppError/StokTidakCukupError dari @/lib/errors (menggantikan stub-sementara)."
 
 import { NextRequest, NextResponse } from "next/server";
+import { wajibPeran } from "@/lib/auth";
+import { AppError, StokTidakCukupError } from "@/lib/errors";
 import { skemaBuatTransaksi } from "@/modules/transaksi/schema";
 import {
   buatTransaksi,
   ambilRiwayatTransaksi,
-  StokTidakCukupError,
 } from "@/modules/transaksi/service";
-import { getSesi } from "@/modules/transaksi/stub-sementara";
 
-// [AI] prompt: "GET /api/transaksi — ambil riwayat transaksi kasir, mendukung query opsional ?tanggal=YYYY-MM-DD."
+// [AI] prompt: "GET /api/transaksi — validasi sesi Kasir lewat wajibPeran, ambil riwayat transaksi dengan filter opsional ?tanggal=YYYY-MM-DD."
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
-    const sesi = await getSesi();
-    if (!sesi) {
-      return NextResponse.json(
-        { berhasil: false, pesan: "Sesi tidak ditemukan. Silakan login kembali." },
-        { status: 401 }
-      );
-    }
-    if (sesi.peran !== "Kasir") {
-      return NextResponse.json(
-        { berhasil: false, pesan: "Akses ditolak. Hanya kasir yang dapat mengakses riwayat ini." },
-        { status: 403 }
-      );
-    }
+    await wajibPeran(["Kasir"]);
 
     const tanggalParam = req.nextUrl.searchParams.get("tanggal") ?? undefined;
     if (tanggalParam && !/^\d{4}-\d{2}-\d{2}$/.test(tanggalParam)) {
@@ -44,6 +32,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       { status: 200 }
     );
   } catch (error) {
+    if (error instanceof AppError) {
+      return NextResponse.json(
+        { berhasil: false, pesan: error.message, kode: error.kode },
+        { status: error.status }
+      );
+    }
+
     console.error("[GET /api/transaksi] Error tak terduga:", error);
     return NextResponse.json(
       {
@@ -55,19 +50,21 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   }
 }
 
-// [AI] prompt: "POST /api/transaksi — parse body JSON, validasi dengan skemaBuatTransaksi.safeParse, panggil buatTransaksi, tangani error validasi (422), stok habis (409), dan error tak terduga (500)."
+// [AI] prompt: "POST /api/transaksi — validasi sesi Kasir lewat wajibPeran, validasi body Zod, panggil buatTransaksi(sesi.idPengguna, data), dan tangani AppError/StokTidakCukupError."
 export async function POST(req: NextRequest): Promise<NextResponse> {
-  const sesi = await getSesi();
-  if (!sesi) {
+  let sesi;
+  try {
+    sesi = await wajibPeran(["Kasir"]);
+  } catch (error) {
+    if (error instanceof AppError) {
+      return NextResponse.json(
+        { berhasil: false, pesan: error.message, kode: error.kode },
+        { status: error.status }
+      );
+    }
     return NextResponse.json(
-      { berhasil: false, pesan: "Sesi tidak ditemukan. Silakan login kembali." },
-      { status: 401 }
-    );
-  }
-  if (sesi.peran !== "Kasir") {
-    return NextResponse.json(
-      { berhasil: false, pesan: "Akses ditolak. Hanya kasir yang dapat mencatat transaksi." },
-      { status: 403 }
+      { berhasil: false, pesan: "Gagal memverifikasi sesi." },
+      { status: 500 }
     );
   }
 
@@ -103,7 +100,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const struk = await buatTransaksi(hasil.data);
+    const struk = await buatTransaksi(sesi.idPengguna, hasil.data);
 
     return NextResponse.json(
       {
@@ -119,8 +116,20 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         {
           berhasil: false,
           pesan: error.message,
+          kode: error.kode,
         },
         { status: 409 }
+      );
+    }
+
+    if (error instanceof AppError) {
+      return NextResponse.json(
+        {
+          berhasil: false,
+          pesan: error.message,
+          kode: error.kode,
+        },
+        { status: error.status }
       );
     }
 

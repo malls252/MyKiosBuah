@@ -1,28 +1,17 @@
-// [AI] prompt: "Buat src/app/api/transaksi/[id]/route.ts untuk GET detail struk satu transaksi berdasarkan id."
+// [AI] prompt: "Perbarui src/app/api/transaksi/[id]/route.ts agar memakai wajibPeran dari @/lib/auth dan AppError dari @/lib/errors (menggantikan stub-sementara)."
 
 import { NextRequest, NextResponse } from "next/server";
+import { wajibPeran } from "@/lib/auth";
+import { AppError } from "@/lib/errors";
 import { ambilStruk } from "@/modules/transaksi/service";
-import { getSesi } from "@/modules/transaksi/stub-sementara";
 
-// [AI] prompt: "GET /api/transaksi/[id] — validasi sesi Kasir, parse params.id (await params di Next.js 16), lalu kembalikan objek Struk."
+// [AI] prompt: "GET /api/transaksi/[id] — validasi sesi Kasir lewat wajibPeran, parse params.id (await params di Next.js 16), lalu kembalikan objek Struk."
 export async function GET(
   _req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
   try {
-    const sesi = await getSesi();
-    if (!sesi) {
-      return NextResponse.json(
-        { berhasil: false, pesan: "Sesi tidak ditemukan. Silakan login kembali." },
-        { status: 401 }
-      );
-    }
-    if (sesi.peran !== "Kasir") {
-      return NextResponse.json(
-        { berhasil: false, pesan: "Akses ditolak. Hanya kasir yang dapat melihat struk ini." },
-        { status: 403 }
-      );
-    }
+    await wajibPeran(["Kasir"]);
 
     const { id } = await context.params;
     const idTransaksi = Number(id);
@@ -50,6 +39,13 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
+    if (error instanceof AppError) {
+      return NextResponse.json(
+        { berhasil: false, pesan: error.message, kode: error.kode },
+        { status: error.status }
+      );
+    }
+
     console.error("[GET /api/transaksi/[id]] Error tak terduga:", error);
     return NextResponse.json(
       {

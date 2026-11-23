@@ -1,13 +1,9 @@
-// [AI] prompt: "Perbarui src/modules/transaksi/service.ts agar memakai repository.ts (tanpa SQL langsung di service) serta menyediakan buatTransaksi, ambilRiwayatTransaksi, dan ambilStruk."
+// [AI] prompt: "Ganti semua import stub-sementara di src/modules/transaksi/service.ts ke modul asli (@/lib/db, @/lib/errors, @/modules/master/service) dan simpan placeholder alokasiStokFifo sementara hingga modul FIFO Elvya selesai di Tugas 9."
 
-import { pool } from "@/lib/db";
-import {
-  getSesi,
-  getDaftarBuahAktif,
-  alokasiStokFifo,
-  jalankanTransaksiDb,
-  StokTidakCukupError,
-} from "./stub-sementara";
+import type { PoolClient } from "pg";
+import { pool, jalankanTransaksiDb } from "@/lib/db";
+import { StokTidakCukupError, ErrorValidasi } from "@/lib/errors";
+import { getDaftarBuahAktif } from "@/modules/master/service";
 import { hitungTotal, hitungKembalian } from "./hitung";
 import {
   simpanTransaksi,
@@ -22,9 +18,25 @@ import { BuatTransaksiInput, BuahAktif, Struk } from "./types";
 export { StokTidakCukupError };
 export type { RingkasanRiwayat };
 
-// [AI] prompt: "Fungsi buatTransaksi memvalidasi buah aktif, menghitung total, memvalidasi uang diterima, lalu menjalankan persistensi atomik lewat repository dan alokasiStokFifo."
-export async function buatTransaksi(input: BuatTransaksiInput): Promise<Struk> {
-  const sesi = await getSesi();
+// TODO(Tugas 9): Ganti dengan `import { alokasiStokFifo } from "@/modules/fifo/service"` setelah modul FIFO Elvya selesai.
+async function alokasiStokFifoSementara(
+  _tx: PoolClient,
+  _params: {
+    idBuah: number;
+    beratKg: number;
+    idDetailTransaksi: number;
+  }
+): Promise<void> {
+  void _tx;
+  void _params;
+  return Promise.resolve();
+}
+
+// [AI] prompt: "Fungsi buatTransaksi(idPengguna, input) memvalidasi buah aktif dari modul master asli, menghitung total, memvalidasi uang diterima, lalu menjalankan persistensi atomik lewat jalankanTransaksiDb asli."
+export async function buatTransaksi(
+  idPengguna: number,
+  input: BuatTransaksiInput
+): Promise<Struk> {
   const daftarBuahAktif = await getDaftarBuahAktif();
   const mapBuah = new Map<number, BuahAktif>(
     daftarBuahAktif.map((b) => [b.idBuah, b])
@@ -32,7 +44,7 @@ export async function buatTransaksi(input: BuatTransaksiInput): Promise<Struk> {
 
   for (const item of input.item) {
     if (!mapBuah.has(item.idBuah)) {
-      throw new Error("Buah tidak tersedia");
+      throw new ErrorValidasi("Buah tidak tersedia");
     }
   }
 
@@ -53,15 +65,21 @@ export async function buatTransaksi(input: BuatTransaksiInput): Promise<Struk> {
 
   if (input.metodeBayar === "Tunai") {
     if (input.uangDiterima === undefined || input.uangDiterima === null) {
-      throw new Error("Uang yang diterima kurang");
+      throw new ErrorValidasi("Uang yang diterima kurang");
     }
-    kembalian = hitungKembalian(input.uangDiterima, totalBayar);
+    try {
+      kembalian = hitungKembalian(input.uangDiterima, totalBayar);
+    } catch (err) {
+      throw new ErrorValidasi(
+        err instanceof Error ? err.message : "Uang yang diterima kurang"
+      );
+    }
     uangDiterima = input.uangDiterima;
   }
 
   const idTransaksi = await jalankanTransaksiDb(async (tx) => {
     const header = await simpanTransaksi(tx, {
-      idPengguna: sesi.idPengguna,
+      idPengguna,
       totalBruto,
       totalDiskon,
       totalBayar,
@@ -84,7 +102,7 @@ export async function buatTransaksi(input: BuatTransaksiInput): Promise<Struk> {
         subtotal,
       });
 
-      await alokasiStokFifo(tx, {
+      await alokasiStokFifoSementara(tx, {
         idBuah: itemInput.idBuah,
         beratKg: itemInput.beratKg,
         idDetailTransaksi,
