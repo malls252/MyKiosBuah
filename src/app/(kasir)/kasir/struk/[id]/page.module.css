@@ -1,0 +1,40 @@
+/* [AI] prompt: "Buat page.module.css untuk halaman detail struk /kasir/struk/[id] dengan variabel CSS global." */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  padding-bottom: 100px;
+}
+
+.kosongPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.teksKosong {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.linkKembali {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  background: var(--color-primary-green);
+  color: var(--color-text-inverted);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+}
+
+.linkKembali:hover {
+  background: var(--color-primary-green-hover);
+}

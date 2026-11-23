@@ -1,42 +1,73 @@
-// [AI] prompt: "Buat src/lib/db.ts untuk koneksi basis data PostgreSQL (Neon) memakai library pg singleton pool dengan parameterized queries tanpa ORM."
-import { Pool, QueryResult, QueryResultRow } from "pg";
+// [AI] prompt: Inisialisasi pool koneksi PostgreSQL (pg) singleton di globalThis untuk serverless/hot-reload, dengan dukungan SSL Neon dan pengecekan DATABASE_URL saat pertama kali dipanggil
+import { Pool, type PoolClient, type QueryResult, type QueryResultRow } from 'pg';
 
-const connectionString = process.env.DATABASE_URL;
+const globalUntukPg = globalThis as unknown as {
+  pgPool: Pool | undefined;
+};
 
-if (!connectionString) {
-  // Hanya lemparkan error saat runtime bukan build-time jika dipanggil
-  if (process.env.NODE_ENV !== "production") {
-    console.warn("⚠️ Peringatan: DATABASE_URL belum terdefinisi.");
+// [AI] prompt: Dapatkan instance pool PostgreSQL tunggal (singleton) dengan batas maksimal 5 koneksi dan SSL aman untuk Neon
+export function dapatkanPool(): Pool {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error('Variabel lingkungan DATABASE_URL belum diatur.');
   }
+
+  if (!globalUntukPg.pgPool) {
+    const butuhSsl = Boolean(
+      connectionString.includes('sslmode=require') ||
+        connectionString.includes('neon.tech') ||
+        process.env.NODE_ENV === 'production'
+    );
+
+    globalUntukPg.pgPool = new Pool({
+      connectionString,
+      ssl: butuhSsl ? { rejectUnauthorized: false } : undefined,
+      max: 5,
+      idleTimeoutMillis: 30000,
+    });
+  }
+
+  return globalUntukPg.pgPool;
 }
 
-const butuhSsl = Boolean(
-  connectionString &&
-    (connectionString.includes("sslmode=require") ||
-      connectionString.includes("neon.tech") ||
-      process.env.NODE_ENV === "production")
-);
+// [AI] prompt: Ekspor pool untuk kompatibilitas jika modul lain membutuhkannya langsung
+export const pool = new Proxy({} as Pool, {
+  get(_target, prop) {
+    const instancePool = dapatkanPool();
+    const value = (instancePool as unknown as Record<string, unknown>)[prop as string];
+    if (typeof value === 'function') {
+      return value.bind(instancePool);
+    }
+    return value;
+  },
+});
 
-// [AI] prompt: "Gunakan singleton pattern pada globalThis agar koneksi pool pg tidak bocor saat hot-reloading di Next.js."
-const globalForDb = globalThis as unknown as { pool: Pool | undefined };
-
-export const pool =
-  globalForDb.pool ??
-  new Pool({
-    connectionString: connectionString || undefined,
-    ssl: butuhSsl ? { rejectUnauthorized: false } : undefined,
-    max: 10,
-    idleTimeoutMillis: 30000,
-  });
-
-if (process.env.NODE_ENV !== "production") {
-  globalForDb.pool = pool;
-}
-
-// [AI] prompt: "Fungsi pembungkus query SQL terparameterisasi dengan dukungan generic tipe data TypeScript."
-export async function query<T extends QueryResultRow = any>(
-  text: string,
-  params?: any[]
+// [AI] prompt: Fungsi query(teks, parameter) untuk menjalankan query SQL berparameter biasa melalui connection pool
+export async function query<T extends QueryResultRow = QueryResultRow>(
+  teks: string,
+  parameter?: unknown[]
 ): Promise<QueryResult<T>> {
-  return pool.query<T>(text, params);
+  const instancePool = dapatkanPool();
+  return instancePool.query<T>(teks, parameter);
+}
+
+// [AI] prompt: Fungsi jalankanTransaksiDb(callback) untuk menjalankan transaksi SQL aman dengan BEGIN, COMMIT, ROLLBACK, dan pelepasan client di finally
+export async function jalankanTransaksiDb<T>(
+  callback: (client: PoolClient) => Promise<T>
+): Promise<T> {
+  const instancePool = dapatkanPool();
+  const client = await instancePool.connect();
+
+  try {
+    await client.query('BEGIN');
+    const hasil = await callback(client);
+    await client.query('COMMIT');
+    return hasil;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 }
