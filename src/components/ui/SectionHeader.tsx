@@ -29,3 +29,5 @@ export const SectionHeader: React.FC<SectionHeaderProps> = ({
     </div>
   );
 };
+
+export const JudulSeksi = SectionHeader;

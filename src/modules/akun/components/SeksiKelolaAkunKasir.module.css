@@ -1,0 +1,185 @@
+/* [AI] prompt: CSS Modules untuk SeksiKelolaAkunKasir: kartu akun kasir aktif/nonaktif, avatar icon, badge status, baris info, dan aksi */
+.seksi {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 16px);
+  margin-top: var(--space-4, 16px);
+  margin-bottom: var(--space-6, 24px);
+}
+
+.daftarKartu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+}
+
+.kartuAkun {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+}
+
+.badgePeran {
+  position: absolute;
+  top: var(--space-3, 12px);
+  right: var(--space-3, 12px);
+}
+
+.barisAtas {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3, 12px);
+  padding-right: 64px; /* Ruang untuk badge Kasir di pojok kanan atas */
+}
+
+.kotakIkon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm, 8px);
+  background-color: var(--color-neutral-hover, #e7ebe4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary, #737b73);
+  flex-shrink: 0;
+}
+
+.teksAkun {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+  min-width: 0;
+}
+
+.namaKasir {
+  font-size: var(--font-size-base, 14px);
+  font-weight: var(--font-weight-bold, 700);
+  color: var(--color-text-primary, #263b2d);
+  margin: 0;
+  word-break: break-word;
+}
+
+.emailKasir {
+  font-size: var(--font-size-xs, 12px);
+  color: var(--color-text-secondary, #737b73);
+  margin: 0;
+  word-break: break-word;
+}
+
+.pillGrup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+  margin-top: 2px;
+}
+
+.barisIdentitas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  background-color: var(--color-neutral-bg, #f1f3ef);
+  border-radius: var(--radius-xs, 4px);
+  font-size: var(--font-size-xs, 12px);
+  color: var(--color-text-secondary, #737b73);
+}
+
+.teleponGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1, 4px);
+}
+
+.idKasir {
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-primary, #263b2d);
+}
+
+.barisAksi {
+  display: flex;
+  gap: var(--space-2, 8px);
+}
+
+.tombolAksi {
+  flex: 1;
+}
+
+.keadaanKosong {
+  text-align: center;
+  padding: var(--space-6, 24px) var(--space-4, 16px);
+  color: var(--color-text-secondary, #737b73);
+  font-size: var(--font-size-sm, 13px);
+}
+
+.keadaanError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3, 12px);
+  padding: var(--space-5, 20px);
+  text-align: center;
+  color: var(--color-red-dark, #9f351b);
+}
+
+/* Modal form & konfirmasi */
+.formModal {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 12px);
+  padding: var(--space-2, 8px) 0;
+}
+
+.kelompokInput {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+}
+
+.label {
+  font-size: var(--font-size-xs, 12px);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text-primary, #263b2d);
+}
+
+.opsional {
+  font-weight: var(--font-weight-normal, 400);
+  color: var(--color-text-secondary, #737b73);
+}
+
+.input {
+  height: 44px;
+  padding: 0 var(--space-3, 12px);
+  font-size: var(--font-size-base, 14px);
+  border: 1px solid var(--color-border, #e5e9e3);
+  border-radius: var(--radius-sm, 8px);
+  outline: none;
+  background-color: var(--color-white, #ffffff);
+  color: var(--color-text-primary, #263b2d);
+}
+
+.input:focus {
+  border-color: var(--color-border-focus, #3f7d4a);
+}
+
+.panelErrorModal {
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  background-color: var(--color-red-light, #fdece8);
+  border: 1px solid var(--color-red-danger, #e76f51);
+  border-radius: var(--radius-sm, 8px);
+  color: var(--color-red-dark, #9f351b);
+  font-size: var(--font-size-xs, 12px);
+}
+
+.teksKonfirmasi {
+  font-size: var(--font-size-sm, 13px);
+  color: var(--color-text-secondary, #737b73);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.tombolGrupModal {
+  display: flex;
+  gap: var(--space-2, 8px);
+  margin-top: var(--space-3, 12px);
+}

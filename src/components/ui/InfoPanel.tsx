@@ -38,3 +38,5 @@ export const InfoPanel: React.FC<InfoPanelProps> = ({
     </div>
   );
 };
+
+export const PanelInfo = InfoPanel;
