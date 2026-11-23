@@ -1,0 +1,341 @@
+/* [AI] prompt: "Buat page.module.css untuk halaman kasir: layout scrollable mobile-first, grid buah, kartu keranjang dengan input bersih, ringkasan total, toggle metode bayar, dan struk bottom sheet." */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  padding-bottom: 100px; /* ruang untuk BottomNavigation */
+}
+
+/* ── Banner pesan ─────────────────────────────────────── */
+.pesanBanner {
+  margin-bottom: 4px;
+}
+
+/* ── Grid pilih buah ──────────────────────────────────── */
+.gridBuah {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.buahCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.buahInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.buahNama {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.buahHarga {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.btnTambahBuah {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background-color: var(--color-primary-green);
+  color: var(--color-text-inverted);
+  font-size: 1.2rem;
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease;
+}
+
+.btnTambahBuah:hover:not(:disabled) {
+  background-color: var(--color-primary-green-hover);
+}
+
+.btnTambahBuah.sudahDipilih {
+  background-color: var(--color-light-green);
+  color: var(--color-primary-green);
+  cursor: default;
+  font-size: var(--font-size-sm);
+}
+
+/* ── Daftar keranjang ─────────────────────────────────── */
+.daftarKeranjang {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.keranjangItem {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.keranjangItemHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.keranjangNama {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.btnHapus {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border);
+  background: var(--color-neutral-bg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btnHapus:hover {
+  background-color: var(--color-red-light);
+  color: var(--color-red-danger);
+  border-color: var(--color-red-danger);
+}
+
+.keranjangInputRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.inputLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.inputAngka {
+  padding: 8px 10px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background: var(--color-neutral-bg);
+  width: 100%;
+  transition: border-color 0.15s ease;
+}
+
+.inputAngka:focus {
+  outline: none;
+  border-color: var(--color-border-focus);
+  background: var(--color-white);
+}
+
+.keranjangSubtotal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.subtotalLabel {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.subtotalNilai {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-green);
+}
+
+/* ── Tombol kosongkan ─────────────────────────────────── */
+.btnKosongkan {
+  font-size: var(--font-size-xs);
+  color: var(--color-red-danger);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.btnKosongkan:hover {
+  background: var(--color-red-light);
+}
+
+/* ── Ringkasan total ──────────────────────────────────── */
+.ringkasan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ringkasanBaris {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.ringkasanBaris.diskon {
+  color: var(--color-orange-dark);
+}
+
+.ringkasanBaris.totalBayar {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  padding-top: 8px;
+  border-top: 1.5px solid var(--color-border);
+  margin-top: 4px;
+}
+
+/* ── Metode bayar ─────────────────────────────────────── */
+.panelBayar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.metodeBayarToggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btnMetode {
+  padding: 12px;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-neutral-bg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnMetode.aktif {
+  border-color: var(--color-primary-green);
+  background: var(--color-light-green);
+  color: var(--color-primary-green);
+  font-weight: var(--font-weight-semibold);
+}
+
+.kembalianBaris {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background: var(--color-light-green);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.kembalianNilai {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-green);
+}
+
+/* ── CTA Proses ───────────────────────────────────────── */
+.ctaWrapper {
+  padding-top: 4px;
+}
+
+/* ── Struk bottom sheet ───────────────────────────────── */
+.strukWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.strukMeta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.strukDivider {
+  border: none;
+  border-top: 1px dashed var(--color-border);
+  margin: 4px 0;
+}
+
+.strukItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-primary);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.strukDiskon {
+  font-size: var(--font-size-xs);
+  color: var(--color-orange-dark);
+}
+
+.strukSubtotal {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-green);
+}
+
+.strukTotal {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-base);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.strukturKembalian {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-green);
+}
+
+.strukMetodeBadge {
+  align-self: flex-start;
+  padding: 4px 10px;
+  background: var(--color-neutral-bg);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.btnTransaksiBaru {
+  margin-top: 8px;
+}
