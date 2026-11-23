@@ -1,0 +1,51 @@
+/* [AI] prompt: "Buat contoh.module.css untuk halaman pameran komponen UI: grid tombol, pills, demonstrasi kartu dan filter." */
+.demoSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.subSectionTitle {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-1);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.buttonGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cardItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sampleTitle {
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.sampleSub {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+}
+
+.samplePrice {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-orange-dark);
+}

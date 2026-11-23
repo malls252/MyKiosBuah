@@ -1,0 +1,42 @@
+/* [AI] prompt: "Buat CardPanel.module.css untuk kartu pembungkus konten dengan sudut lengkung 14px, varian putih dan abu, serta padding konsisten." */
+.card {
+  border-radius: var(--radius-lg);
+  transition: box-shadow 0.15s ease-in-out;
+  position: relative;
+}
+
+.putih {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.abu {
+  background-color: var(--color-neutral-bg);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.clickable:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Varian Padding */
+.padSm {
+  padding: var(--space-2) var(--space-3);
+}
+
+.padMd {
+  padding: var(--space-4);
+}
+
+.padLg {
+  padding: var(--space-5);
+}
+
+.padNone {
+  padding: 0;
+}
