@@ -1,8 +1,8 @@
-// [AI] prompt: Middleware Next.js pemeriksa token JWT dan otorisasi peran berdasarkan matriks hak akses Tugas 4
+// [AI] prompt: Proxy Next.js 16 pemeriksa token JWT dan otorisasi peran berdasarkan matriks hak akses Tugas 4 (migrasi dari src/middleware.ts)
 import { NextResponse, type NextRequest } from 'next/server';
 import { verifikasiToken, type PayloadSesi } from './lib/jwt';
 
-// Catatan keamanan: Middleware ini berfungsi sebagai lapisan pertahanan pertama (first layer).
+// Catatan keamanan: Proxy ini berfungsi sebagai lapisan pertahanan pertama (first layer).
 // Handler API tetap wajib memanggil fungsi wajibPeran() dari src/lib/auth.ts sebagai lapisan pertahanan kedua (defense-in-depth).
 
 const NAMA_COOKIE_SESI = 'sesi_kios';
@@ -19,8 +19,8 @@ function dapatkanRuteBeranda(peran: PayloadSesi['peran']): string {
   }
 }
 
-// [AI] prompt: Logika utama middleware untuk validasi sesi, pengalihan halaman login/beranda, dan perlindungan endpoint API
-export async function middleware(request: NextRequest): Promise<NextResponse> {
+// [AI] prompt: Logika utama proxy untuk validasi sesi, pengalihan halaman login/beranda, dan perlindungan endpoint API
+export async function proxy(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(NAMA_COOKIE_SESI)?.value;
   const sesi = token ? await verifikasiToken(token) : null;
@@ -96,7 +96,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   return NextResponse.next();
 }
 
-// [AI] prompt: Konfigurasi matcher middleware agar mengabaikan file statis, favicon, dan internal Next.js (_next)
+// [AI] prompt: Konfigurasi matcher proxy agar mengabaikan file statis, favicon, dan internal Next.js (_next)
 export const config = {
   matcher: [
     /*
