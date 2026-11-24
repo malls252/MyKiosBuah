@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: 'Beranda utama Super Admin pemilik kios buah',
 };
 
+export const instant = false;
+
 // [AI] prompt: Render halaman beranda Super Admin dengan sapaan sesi dan integrasi SeksiKelolaAkunKasir
 export default async function HalamanBerandaAdmin() {
   const sesi = await getSesi();

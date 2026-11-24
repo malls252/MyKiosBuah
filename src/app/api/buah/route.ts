@@ -4,8 +4,6 @@ import { wajibPeran } from '@/lib/auth';
 import { skemaBuah } from '@/modules/master/schema';
 import { daftarBuah, getDaftarBuahAktif, buatBuah } from '@/modules/master/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler GET untuk mengambil daftar buah (bisa diakses semua peran login, filter ?aktif=true)
 export async function GET(request: Request): Promise<Response> {
   try {
@@ -30,7 +28,7 @@ export async function POST(request: Request): Promise<Response> {
     const hasilValidasi = skemaBuah.safeParse(body);
 
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data buah tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data buah tidak valid');
     }
 
     const buahBaru = await buatBuah(hasilValidasi.data);

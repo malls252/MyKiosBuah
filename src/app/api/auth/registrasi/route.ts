@@ -3,8 +3,6 @@ import { ubahErrorKeRespons, ErrorValidasi } from '@/lib/errors';
 import { skemaRegistrasi } from '@/modules/akun/schema';
 import { registrasiPembeli } from '@/modules/akun/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler POST untuk registrasi pembeli dengan status respons 201 Created
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -12,7 +10,7 @@ export async function POST(request: Request): Promise<Response> {
     const hasilValidasi = skemaRegistrasi.safeParse(body);
 
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data registrasi tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data registrasi tidak valid');
     }
 
     const penggunaBaru = await registrasiPembeli(hasilValidasi.data);

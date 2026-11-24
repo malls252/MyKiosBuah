@@ -4,8 +4,6 @@ import { setCookieSesi } from '@/lib/auth';
 import { skemaLogin } from '@/modules/akun/schema';
 import { login } from '@/modules/akun/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler POST untuk autentikasi pengguna masuk, mengembalikan data pengguna dan menyetel cookie sesi
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -13,7 +11,7 @@ export async function POST(request: Request): Promise<Response> {
     const hasilValidasi = skemaLogin.safeParse(body);
 
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data login tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data login tidak valid');
     }
 
     const { pengguna, token } = await login(hasilValidasi.data.email, hasilValidasi.data.password);

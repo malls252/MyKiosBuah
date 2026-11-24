@@ -4,8 +4,6 @@ import { wajibPeran } from '@/lib/auth';
 import { skemaUbahBuah } from '@/modules/master/schema';
 import { ubahBuah } from '@/modules/master/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler PATCH untuk memperbarui buah berdasarkan ID parameter dengan await params
 export async function PATCH(
   request: Request,
@@ -25,7 +23,7 @@ export async function PATCH(
     const hasilValidasi = skemaUbahBuah.safeParse(body);
 
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data pengubahan buah tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data pengubahan buah tidak valid');
     }
 
     const buahDiperbarui = await ubahBuah(id, hasilValidasi.data);

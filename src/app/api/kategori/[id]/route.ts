@@ -4,8 +4,6 @@ import { wajibPeran } from '@/lib/auth';
 import { skemaKategori } from '@/modules/master/schema';
 import { ubahKategori, hapusKategori } from '@/modules/master/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler PATCH untuk mengubah data kategori berdasarkan ID parameter
 export async function PATCH(
   request: Request,
@@ -25,7 +23,7 @@ export async function PATCH(
     const hasilValidasi = skemaKategori.partial().safeParse(body);
 
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data pengubahan kategori tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data pengubahan kategori tidak valid');
     }
 
     const kategoriDiperbarui = await ubahKategori(id, hasilValidasi.data);

@@ -4,8 +4,6 @@ import { wajibPeran } from '@/lib/auth';
 import { skemaSatuan } from '@/modules/master/schema';
 import { ubahSatuan, hapusSatuan } from '@/modules/master/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler PATCH untuk mengubah data satuan berdasarkan ID parameter
 export async function PATCH(
   request: Request,
@@ -25,7 +23,7 @@ export async function PATCH(
     const hasilValidasi = skemaSatuan.partial().safeParse(body);
 
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data pengubahan satuan tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data pengubahan satuan tidak valid');
     }
 
     const satuanDiperbarui = await ubahSatuan(id, hasilValidasi.data);

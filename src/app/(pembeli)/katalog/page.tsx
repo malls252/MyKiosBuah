@@ -11,6 +11,8 @@ export const metadata: Metadata = {
   description: 'Katalog belanja buah segar MyKiosBuah untuk pembeli',
 };
 
+export const instant = false;
+
 // [AI] prompt: Render halaman katalog sementara untuk Pembeli dengan sapaan nama pengguna dan kerangka layout pembeli
 export default async function HalamanKatalogPembeli() {
   const sesi = await getSesi();

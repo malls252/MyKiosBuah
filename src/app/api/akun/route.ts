@@ -4,8 +4,6 @@ import { wajibPeran } from '@/lib/auth';
 import { skemaBuatAkunKasir } from '@/modules/akun/schema';
 import { daftarAkunKasir, buatAkunKasir } from '@/modules/akun/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler GET untuk mengambil daftar akun kasir dengan proteksi peran Super Admin
 export async function GET(): Promise<Response> {
   try {
@@ -26,7 +24,7 @@ export async function POST(request: Request): Promise<Response> {
     const hasilValidasi = skemaBuatAkunKasir.safeParse(body);
 
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data pembuatan akun kasir tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data pembuatan akun kasir tidak valid');
     }
 
     const kasirBaru = await buatAkunKasir(hasilValidasi.data);

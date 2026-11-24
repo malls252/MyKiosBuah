@@ -4,8 +4,6 @@ import { wajibPeran } from '@/lib/auth';
 import { skemaKategori } from '@/modules/master/schema';
 import { daftarKategori, buatKategori } from '@/modules/master/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler GET untuk mengambil seluruh kategori buah (semua peran login)
 export async function GET(): Promise<Response> {
   try {
@@ -26,7 +24,7 @@ export async function POST(request: Request): Promise<Response> {
     const hasilValidasi = skemaKategori.safeParse(body);
 
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data kategori tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data kategori tidak valid');
     }
 
     const kategoriBaru = await buatKategori(hasilValidasi.data);

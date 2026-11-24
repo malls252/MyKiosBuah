@@ -4,8 +4,6 @@ import { wajibPeran } from '@/lib/auth';
 import { skemaSatuan } from '@/modules/master/schema';
 import { daftarSatuan, buatSatuan } from '@/modules/master/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler GET untuk mengambil seluruh satuan buah (semua peran login)
 export async function GET(): Promise<Response> {
   try {
@@ -26,7 +24,7 @@ export async function POST(request: Request): Promise<Response> {
     const hasilValidasi = skemaSatuan.safeParse(body);
 
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data satuan tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data satuan tidak valid');
     }
 
     const satuanBaru = await buatSatuan(hasilValidasi.data);

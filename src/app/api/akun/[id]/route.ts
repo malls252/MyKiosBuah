@@ -4,8 +4,6 @@ import { wajibPeran } from '@/lib/auth';
 import { skemaUbahAkunKasir, skemaSetAktif } from '@/modules/akun/schema';
 import { ubahAkunKasir, ubahStatusAkun } from '@/modules/akun/service';
 
-export const runtime = 'nodejs';
-
 // [AI] prompt: Handler PATCH untuk memproses pembaruan akun kasir atau status aktifnya berdasarkan ID parameter
 export async function PATCH(
   request: Request,
@@ -29,7 +27,7 @@ export async function PATCH(
     if ('aktif' in body) {
       const hasilValidasi = skemaSetAktif.safeParse(body);
       if (!hasilValidasi.success) {
-        throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data status aktif tidak valid');
+        throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data status aktif tidak valid');
       }
       const hasil = await ubahStatusAkun(id, hasilValidasi.data.aktif, sesi.idPengguna);
       return Response.json({ data: hasil });
@@ -38,7 +36,7 @@ export async function PATCH(
     // Jika bukan perubahan status aktif, validasi dengan skemaUbahAkunKasir
     const hasilValidasi = skemaUbahAkunKasir.safeParse(body);
     if (!hasilValidasi.success) {
-      throw new ErrorValidasi(hasilValidasi.error.errors[0]?.message || 'Data perubahan akun kasir tidak valid');
+      throw new ErrorValidasi(hasilValidasi.error.issues[0]?.message || 'Data perubahan akun kasir tidak valid');
     }
 
     const hasil = await ubahAkunKasir(id, hasilValidasi.data);

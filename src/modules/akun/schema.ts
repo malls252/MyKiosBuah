@@ -3,14 +3,14 @@ import { z } from 'zod';
 
 // [AI] prompt: Skema pembantu untuk validasi nama, email, password, nomor telepon, dan alamat dengan pesan bahasa Indonesia
 const skemaNama = z
-  .string({ required_error: 'Nama wajib diisi' })
+  .string({ message: 'Nama wajib diisi' })
   .max(100, 'Nama maksimal 100 karakter')
   .refine((val) => val.trim().length > 0, 'Nama tidak boleh kosong atau hanya berisi spasi')
   .refine((val) => val.trim().length >= 2, 'Nama minimal 2 karakter')
   .transform((val) => val.trim());
 
 const skemaEmail = z
-  .string({ required_error: 'Email wajib diisi' })
+  .string({ message: 'Email wajib diisi' })
   .max(100, 'Email maksimal 100 karakter')
   .transform((val) => val.trim().toLowerCase())
   .pipe(
@@ -22,7 +22,7 @@ const skemaEmail = z
   );
 
 const skemaPasswordRegistrasi = z
-  .string({ required_error: 'Password wajib diisi' })
+  .string({ message: 'Password wajib diisi' })
   .min(8, 'Password minimal 8 karakter')
   .max(72, 'Password maksimal 72 karakter')
   .regex(/[A-Za-z]/, 'Password harus mengandung huruf')
@@ -51,7 +51,7 @@ const skemaAlamat = z
 export const skemaLogin = z.object({
   email: skemaEmail,
   password: z
-    .string({ required_error: 'Password wajib diisi' })
+    .string({ message: 'Password wajib diisi' })
     .min(1, 'Password wajib diisi')
     .max(72, 'Password maksimal 72 karakter'),
 });
@@ -83,7 +83,7 @@ export const skemaUbahAkunKasir = z.object({
 
 // [AI] prompt: Skema validasi perubahan status aktif akun pengguna
 export const skemaSetAktif = z.object({
-  aktif: z.boolean({ required_error: 'Status aktif wajib diisi' }),
+  aktif: z.boolean({ message: 'Status aktif wajib diisi' }),
 });
 
 // [AI] prompt: Tipe TypeScript hasil inferensi skema Zod untuk digunakan di service dan handler
